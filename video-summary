@@ -3,8 +3,9 @@ import os
 from google import genai
 from google.genai import types
 
-GEMINI_API_KEY='xxxxxxxxxxxx'
-def generate():
+GEMINI_API_KEY='xxxxxxxxxxxxx'
+summary=""
+def generate(video_url, prompt):
     client = genai.Client(
         api_key=GEMINI_API_KEY,
     )
@@ -15,7 +16,7 @@ def generate():
             role="user",
             parts=[
                 types.Part.from_uri(
-                    file_uri="https://youtu.be/YLEUVtuh0jM",
+                    file_uri=video_url,
                     mime_type="video/*",
                 ),
                 types.Part.from_text(text="""Identify active speakers and more details about their attendance"""),
@@ -29,16 +30,25 @@ def generate():
         max_output_tokens=65536,
         response_mime_type="text/plain",
         system_instruction=[
-            types.Part.from_text(text="""Behave as a content analyzer for summarization"""),
+            types.Part.from_text(text=prompt),
         ],
     )
 
-    for chunk in client.models.generate_content_stream(
-        model=model,
-        contents=contents,
-        config=generate_content_config,
-    ):
-        print(chunk.text, end="")
-
+    # Save the summary to a file
+    with open("video-summary.txt", "w") as file:
+        
+      for chunk in client.models.generate_content_stream(
+          model=model,
+          contents=contents,
+          config=generate_content_config,
+      ):
+          print(chunk.text, end="")
+          file.write(chunk.text)
+        
+    # Save the summary to a file
+  
+    print("Summary saved to video-summary.txt")
 if __name__ == "__main__":
-    generate()
+    video_url = "https://www.youtube.com/watch?v=YLEUVtuh0jM"
+    prompt = "Identify active speakers and more details about their attendance"
+    generate(video_url, prompt)
