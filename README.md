@@ -3,4 +3,4 @@ In this usecase, the model takes the following input:
 prompt text: "Identify active speakers and more details about their attendance"
 Prompt video: https://www.youtube.com/watch?v=YLEUVtuh0jM
 System Instruction: "Behave as a content analyzer for summarization"
-Then it output the summary of the content.
+Then it output the summary of the content in the file: video-summary (see repository)
